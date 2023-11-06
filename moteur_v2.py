@@ -98,11 +98,40 @@ class TwoAxis:
 		self.move_x(delta_x)
 		self.move_y(delta_y)
 
-if __name__ == "__main__":
-	x = np.linspace(0,150,150+1)
-	y = np.linspace(0,200,200+1)
-	list_points = list(product(x,y))
+
+class Scan:
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+		list_points = list(product(x,y))
 		
+	def reorganise_array(self, list_points):
+		subgroups = [list_points[i:i + len(y)] for i in range(0, len(list_points), len(y))]
+
+		for i, group in enumerate(subgroups):
+			if i % 2 == 0:  
+				subgroups[i] = sorted(group, key=lambda tup: tup[1]) 
+			else:
+				subgroups[i] = sorted(group, key=lambda tup: tup[1], reverse=True) 
+
+		new_list_points = [item for group in subgroups for item in group]
+
+		return new_list_points
+
+
+
+
+
+if __name__ == "__main__":
+	x = np.linspace(0,15,15+1)
+	y = np.linspace(0,20,20+1)
+	list_points = list(product(x,y))
+
+	scan=Scan(x,y)
+	new_list_points = scan.reorganise_array(list_points)
+	print(new_list_points)
+	#clc()
+	
 	mtr = Motor(17,27,0.001)
 	mtr2 = Motor(9,10,0.001)
 	
